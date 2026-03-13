@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global B2B Trade Show Map 2026</title>
+  <meta name="description" content="Interactive world map of 200+ global B2B trade shows. Filter by industry, region, and tier.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Leaflet MarkerCluster -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0c0c12;
+      --surface: #1a1a24;
+      --surface2: #20202e;
+      --border: #1f2033;
+      --border-hover: #2e2f4a;
+      --text: #ffffff;
+      --text-muted: #a7a7a8;
+      --text-dim: #6b6b6c;
+      --accent: #6b75ff;
+      --accent-hover: #8189ff;
+      --radius: 10px;
+      --radius-lg: 14px;
+      --header-h: 56px;
+      --panel-w: 260px;
+
+      --r-na:  #60a5fa;
+      --r-eu:  #a78bfa;
+      --r-as:  #f87171;
+      --r-mea: #fbbf24;
+      --r-la:  #34d399;
+    }
+
+    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif; }
+
+    /* ── HEADER ── */
+    #header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      height: var(--header-h);
+      background: rgba(12, 12, 18, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; gap: 16px;
+    }
+    #header-left { display: flex; align-items: center; gap: 16px; }
+    #header h1 { font-size: 15px; font-weight: 600; white-space: nowrap; }
+    #stats { display: flex; gap: 12px; }
+    .stat { font-size: 12px; color: var(--text-muted); }
+    .stat span { color: var(--text); font-weight: 600; }
+    #cta-btn {
+      background: var(--accent); color: #fff;
+      border: none; border-radius: 8px;
+      padding: 7px 14px; font-size: 13px; font-weight: 600;
+      cursor: pointer; white-space: nowrap; text-decoration: none;
+      transition: background 0.15s;
+    }
+    #cta-btn:hover { background: var(--accent-hover); }
+
+    /* ── MAP ── */
+    #map {
+      position: fixed;
+      top: var(--header-h); left: 0; right: 0; bottom: 0;
+    }
+
+    /* ── FILTER PANEL ── */
+    #panel {
+      position: fixed;
+      top: calc(var(--header-h) + 12px);
+      left: 12px;
+      width: var(--panel-w);
+      background: rgba(26, 26, 36, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      z-index: 999;
+      display: flex; flex-direction: column; gap: 14px;
+      max-height: calc(100vh - var(--header-h) - 24px);
+      overflow-y: auto;
+    }
+    #panel h2 { font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    .filter-group { display: flex; flex-direction: column; gap: 6px; }
+    .filter-group label { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+
+    .filter-group select,
+    .filter-group input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      padding: 7px 10px;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .filter-group select:focus,
+    .filter-group input:focus { border-color: var(--border-hover); }
+    .filter-group select option { background: #1a1a24; }
+
+    #reset-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 12px;
+      padding: 7px 10px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+      width: 100%;
+    }
+    #reset-btn:hover { border-color: var(--border-hover); color: var(--text); }
+
+    #show-count { font-size: 12px; color: var(--text-dim); text-align: center; padding-top: 2px; }
+
+    /* ── LEGEND ── */
+    #legend {
+      position: fixed;
+      bottom: 24px; right: 12px;
+      background: rgba(26, 26, 36, 0.95);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 12px 14px;
+      z-index: 999;
+      display: flex; flex-direction: column; gap: 6px;
+      min-width: 160px;
+    }
+    #legend h3 { font-size: 10px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+    .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .legend-tier { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); }
+    .legend-circle { border-radius: 50%; background: rgba(107,117,255,0.5); border: 1.5px solid #6b75ff; flex-shrink: 0; }
+
+    /* ── POPUP ── */
+    .leaflet-popup-content-wrapper {
+      background: var(--surface2) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius-lg) !important;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5) !important;
+      color: var(--text) !important;
+      padding: 0 !important;
+    }
+    .leaflet-popup-content { margin: 0 !important; width: 240px !important; }
+    .leaflet-popup-tip { background: var(--surface2) !important; }
+    .leaflet-popup-close-button { color: var(--text-dim) !important; top: 10px !important; right: 10px !important; font-size: 16px !important; }
+
+    .popup-inner { padding: 16px; }
+    .popup-name { font-size: 14px; font-weight: 700; line-height: 1.3; margin-bottom: 4px; }
+    .popup-venue { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+    .popup-meta { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+    .popup-row { display: flex; align-items: flex-start; gap: 6px; font-size: 12px; }
+    .popup-label { color: var(--text-dim); min-width: 56px; flex-shrink: 0; }
+    .popup-val { color: var(--text-muted); }
+    .popup-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px; }
+    .popup-tag {
+      font-size: 11px; padding: 2px 8px; border-radius: 20px;
+      background: rgba(255,255,255,0.06); color: var(--text-muted);
+    }
+    .popup-tag.tier1 { background: rgba(107,117,255,0.15); color: var(--accent); }
+    .popup-link {
+      display: block; text-align: center;
+      background: var(--accent); color: #fff;
+      border-radius: 8px; padding: 7px; font-size: 12px; font-weight: 600;
+      text-decoration: none; transition: background 0.15s;
+    }
+    .popup-link:hover { background: var(--accent-hover); }
+
+    /* ── CLUSTER ── */
+    .marker-cluster-small, .marker-cluster-medium, .marker-cluster-large {
+      background: rgba(107,117,255,0.15) !important;
+    }
+    .marker-cluster-small div, .marker-cluster-medium div, .marker-cluster-large div {
+      background: rgba(107,117,255,0.6) !important;
+      color: #fff !important;
+      font-family: 'Inter Tight', sans-serif !important;
+      font-weight: 700 !important;
+    }
+
+    /* scrollbar */
+    #panel::-webkit-scrollbar { width: 4px; }
+    #panel::-webkit-scrollbar-track { background: transparent; }
+    #panel::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header id="header">
+  <div id="header-left">
+    <h1>Global B2B Trade Show Map</h1>
+    <div id="stats">
+      <div class="stat"><span id="total-count">200</span> Shows</div>
+      <div class="stat"><span id="country-count">—</span> Countries</div>
+      <div class="stat"><span id="industry-count">—</span> Industries</div>
+    </div>
+  </div>
+  <a id="cta-btn" href="https://www.lensmor.com/?utm_source=github&utm_medium=map&utm_campaign=trade-show-world-map" target="_blank" rel="noopener">
+    Try Lensmor →
+  </a>
+</header>
+
+<!-- FILTER PANEL -->
+<div id="panel">
+  <h2>Filters</h2>
+
+  <div class="filter-group">
+    <label>Search</label>
+    <input type="text" id="filter-search" placeholder="Show name, city...">
+  </div>
+
+  <div class="filter-group">
+    <label>Region</label>
+    <select id="filter-region">
+      <option value="">All Regions</option>
+      <option value="North America">North America</option>
+      <option value="Europe">Europe</option>
+      <option value="Asia">Asia</option>
+      <option value="Middle East & Africa">Middle East & Africa</option>
+      <option value="Latin America">Latin America</option>
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label>Industry</label>
+    <select id="filter-industry">
+      <option value="">All Industries</option>
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label>Tier</label>
+    <select id="filter-tier">
+      <option value="">All Tiers</option>
+      <option value="1">Tier 1 — World Top Shows</option>
+      <option value="2">Tier 2 — Regional Leaders</option>
+      <option value="3">Tier 3 — Specialized</option>
+    </select>
+  </div>
+
+  <div class="filter-group">
+    <label>Month</label>
+    <select id="filter-month">
+      <option value="">All Months</option>
+      <option value="1">January</option>
+      <option value="2">February</option>
+      <option value="3">March</option>
+      <option value="4">April</option>
+      <option value="5">May</option>
+      <option value="6">June</option>
+      <option value="7">July</option>
+      <option value="8">August</option>
+      <option value="9">September</option>
+      <option value="10">October</option>
+      <option value="11">November</option>
+      <option value="12">December</option>
+    </select>
+  </div>
+
+  <button id="reset-btn">Reset Filters</button>
+  <div id="show-count"></div>
+</div>
+
+<!-- LEGEND -->
+<div id="legend">
+  <h3>Region</h3>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-na)"></div>North America</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-eu)"></div>Europe</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-as)"></div>Asia</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-mea)"></div>Middle East & Africa</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--r-la)"></div>Latin America</div>
+  <div style="border-top: 1px solid var(--border); margin: 4px 0;"></div>
+  <h3>Tier (Size)</h3>
+  <div class="legend-tier"><div class="legend-circle" style="width:16px;height:16px;"></div>Tier 1 — Top Global</div>
+  <div class="legend-tier"><div class="legend-circle" style="width:11px;height:11px;"></div>Tier 2 — Regional</div>
+  <div class="legend-tier"><div class="legend-circle" style="width:7px;height:7px;"></div>Tier 3 — Specialized</div>
+</div>
+
+<!-- MAP -->
+<div id="map"></div>
+
+<script>
+const REGION_COLORS = {
+  "North America":       "#60a5fa",
+  "Europe":              "#a78bfa",
+  "Asia":                "#f87171",
+  "Middle East & Africa":"#fbbf24",
+  "Latin America":       "#34d399",
+};
+const TIER_RADIUS = { 1: 9, 2: 7, 3: 5 };
+
+// Init map
+const map = L.map('map', {
+  center: [25, 10],
+  zoom: 2,
+  minZoom: 2,
+  maxZoom: 10,
+  zoomControl: false,
+});
+L.control.zoom({ position: 'bottomleft' }).addTo(map);
+
+// Dark tile layer
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://openstreetmap.org">OSM</a>',
+  subdomains: 'abcd',
+  maxZoom: 20
+}).addTo(map);
+
+// Cluster group
+const clusters = L.markerClusterGroup({
+  maxClusterRadius: 50,
+  spiderfyOnMaxZoom: true,
+  showCoverageOnHover: false,
+  iconCreateFunction(c) {
+    const n = c.getChildCount();
+    const sz = n > 50 ? 44 : n > 20 ? 38 : 32;
+    return L.divIcon({
+      html: `<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:rgba(107,117,255,0.18);border:2px solid rgba(107,117,255,0.7);display:flex;align-items:center;justify-content:center;font-family:'Inter Tight',sans-serif;font-weight:700;font-size:${sz > 38 ? 13 : 11}px;color:#fff;">${n}</div>`,
+      className: '',
+      iconSize: [sz, sz],
+      iconAnchor: [sz/2, sz/2],
+    });
+  }
+});
+
+let allShows = [];
+let activeMarkers = [];
+
+function makeMarker(show) {
+  const color = REGION_COLORS[show.region] || '#ffffff';
+  const r = TIER_RADIUS[show.tier] || 7;
+  const icon = L.divIcon({
+    html: `<div style="width:${r*2}px;height:${r*2}px;border-radius:50%;background:${color};opacity:0.9;border:2px solid rgba(255,255,255,0.3);"></div>`,
+    className: '',
+    iconSize: [r*2, r*2],
+    iconAnchor: [r, r],
+  });
+  const marker = L.marker([show.lat, show.lng], { icon });
+
+  const dateStr = show.start_date
+    ? new Date(show.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    : '—';
+  const month = show.start_date ? new Date(show.start_date).getMonth() + 1 : 0;
+
+  marker._show = show;
+  marker._month = month;
+
+  const tierLabel = show.tier === 1 ? 'Tier 1 — Top Global' : show.tier === 2 ? 'Tier 2 — Regional' : 'Tier 3 — Specialized';
+
+  marker.bindPopup(`
+    <div class="popup-inner">
+      <div class="popup-name">${show.name}</div>
+      <div class="popup-venue">${show.venue || ''}</div>
+      <div class="popup-meta">
+        <div class="popup-row"><span class="popup-label">Location</span><span class="popup-val">${show.city}, ${show.country}</span></div>
+        <div class="popup-row"><span class="popup-label">Date</span><span class="popup-val">${dateStr}</span></div>
+        <div class="popup-row"><span class="popup-label">Frequency</span><span class="popup-val">${show.frequency || '—'}</span></div>
+      </div>
+      <div class="popup-tags">
+        <span class="popup-tag">${show.industry}</span>
+        <span class="popup-tag">${show.region}</span>
+        <span class="popup-tag ${show.tier === 1 ? 'tier1' : ''}">${tierLabel}</span>
+      </div>
+      ${show.website ? `<a class="popup-link" href="${show.website}" target="_blank" rel="noopener">Visit Website →</a>` : ''}
+    </div>
+  `, { maxWidth: 260 });
+
+  return marker;
+}
+
+function updateStats(shows) {
+  const countries = new Set(shows.map(s => s.country));
+  const industries = new Set(shows.map(s => s.industry));
+  document.getElementById('total-count').textContent = shows.length;
+  document.getElementById('country-count').textContent = countries.size;
+  document.getElementById('industry-count').textContent = industries.size;
+  document.getElementById('show-count').textContent = `Showing ${shows.length} of ${allShows.length} shows`;
+}
+
+function applyFilters() {
+  const search  = document.getElementById('filter-search').value.trim().toLowerCase();
+  const region  = document.getElementById('filter-region').value;
+  const industry = document.getElementById('filter-industry').value;
+  const tier    = document.getElementById('filter-tier').value;
+  const month   = document.getElementById('filter-month').value;
+
+  clusters.clearLayers();
+  const visible = [];
+
+  for (const marker of activeMarkers) {
+    const s = marker._show;
+    const m = marker._month;
+
+    if (region   && s.region   !== region)  continue;
+    if (industry && s.industry !== industry) continue;
+    if (tier     && String(s.tier) !== tier) continue;
+    if (month    && String(m) !== month)     continue;
+    if (search   && !s.name.toLowerCase().includes(search) &&
+                    !s.city.toLowerCase().includes(search) &&
+                    !s.country.toLowerCase().includes(search)) continue;
+
+    visible.push(s);
+    clusters.addLayer(marker);
+  }
+
+  map.addLayer(clusters);
+  updateStats(visible);
+}
+
+// Load data
+fetch('data/b2b_shows.json')
+  .then(r => r.json())
+  .then(shows => {
+    allShows = shows;
+
+    // Populate industry filter
+    const industries = [...new Set(shows.map(s => s.industry))].sort();
+    const sel = document.getElementById('filter-industry');
+    industries.forEach(ind => {
+      const opt = document.createElement('option');
+      opt.value = ind;
+      opt.textContent = ind;
+      sel.appendChild(opt);
+    });
+
+    // Build markers
+    activeMarkers = shows.map(makeMarker);
+    activeMarkers.forEach(m => clusters.addLayer(m));
+    map.addLayer(clusters);
+
+    updateStats(shows);
+
+    // Events
+    ['filter-search', 'filter-region', 'filter-industry', 'filter-tier', 'filter-month']
+      .forEach(id => document.getElementById(id).addEventListener('input', applyFilters));
+
+    document.getElementById('reset-btn').addEventListener('click', () => {
+      document.getElementById('filter-search').value = '';
+      document.getElementById('filter-region').value = '';
+      document.getElementById('filter-industry').value = '';
+      document.getElementById('filter-tier').value = '';
+      document.getElementById('filter-month').value = '';
+      applyFilters();
+    });
+  })
+  .catch(err => console.error('Failed to load data:', err));
+</script>
+
+</body>
+</html>
