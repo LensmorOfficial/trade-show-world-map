@@ -1,0 +1,26 @@
+name: Data Error
+description: Report incorrect or outdated data for an existing show
+title: "[FIX] "
+labels: ["bug", "data"]
+body:
+  - type: input
+    id: show_name
+    attributes:
+      label: Show Name
+      placeholder: e.g. CES
+    validations:
+      required: true
+  - type: textarea
+    id: error_description
+    attributes:
+      label: What is wrong?
+      placeholder: Describe the incorrect field(s) and what the correct value should be
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source
+      placeholder: Link to official source confirming the correct data
+    validations:
+      required: false

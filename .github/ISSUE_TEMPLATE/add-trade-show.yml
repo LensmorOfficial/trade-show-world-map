@@ -1,0 +1,57 @@
+name: Add Trade Show
+description: Submit a trade show to be added to the map
+title: "[ADD] "
+labels: ["data", "enhancement"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Show Name
+      placeholder: e.g. Hannover Messe
+    validations:
+      required: true
+  - type: input
+    id: website
+    attributes:
+      label: Official Website
+      placeholder: https://
+    validations:
+      required: true
+  - type: input
+    id: location
+    attributes:
+      label: City, Country
+      placeholder: e.g. Hannover, Germany
+    validations:
+      required: true
+  - type: input
+    id: venue
+    attributes:
+      label: Venue
+      placeholder: e.g. Hannover Exhibition Grounds
+    validations:
+      required: false
+  - type: input
+    id: dates
+    attributes:
+      label: Typical Dates
+      placeholder: e.g. April 22–26, 2026
+    validations:
+      required: true
+  - type: input
+    id: industry
+    attributes:
+      label: Industry
+      placeholder: e.g. Manufacturing & Industrial
+    validations:
+      required: true
+  - type: dropdown
+    id: tier
+    attributes:
+      label: Tier
+      options:
+        - "1 — Top global show"
+        - "2 — Regional leader"
+        - "3 — Specialized / emerging"
+    validations:
+      required: true

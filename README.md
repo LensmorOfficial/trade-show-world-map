@@ -1,8 +1,9 @@
-# 🌍 Global B2B Trade Show Map
+# Global B2B Trade Show Map
 
 [![Shows](https://img.shields.io/badge/Shows-200-6b75ff?style=flat-square)](https://lensmorofficial.github.io/trade-show-world-map/)
 [![GitHub Stars](https://img.shields.io/github/stars/LensmorOfficial/trade-show-world-map?style=flat-square)](https://github.com/LensmorOfficial/trade-show-world-map/stargazers)
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey?style=flat-square)](https://creativecommons.org/licenses/by/4.0/)
+[![Last Commit](https://img.shields.io/github/last-commit/LensmorOfficial/trade-show-world-map?style=flat-square)](https://github.com/LensmorOfficial/trade-show-world-map/commits/main)
 
 **[View Interactive Map →](https://lensmorofficial.github.io/trade-show-world-map/)**
 
@@ -64,11 +65,9 @@ python3 -m http.server 8000
 
 ## Contributing
 
-Found a missing show or incorrect data? PRs welcome!
+Found a missing show or incorrect data? PRs and issues are welcome.
 
-1. Edit `data/b2b_shows.json`
-2. Follow the existing schema
-3. Submit a pull request
+See [CONTRIBUTING.md](CONTRIBUTING.md) for data format requirements and the PR checklist.
 
 ## License
 
@@ -76,8 +75,33 @@ Data is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 
 ---
 
-## About
+## Related Projects
 
-Built and maintained by [Lensmor](https://www.lensmor.com/?utm_source=github&utm_medium=readme&utm_campaign=trade-show-world-map) — the trade show intelligence platform for exhibitors and event marketers.
+| Repo | Description |
+|------|-------------|
+| [awesome-trade-shows](https://github.com/LensmorOfficial/awesome-trade-shows) | Curated list of 200+ trade shows by industry |
+| [trade-show-calendar](https://github.com/LensmorOfficial/trade-show-calendar) | Open dataset of 133+ global shows in CSV/JSON + interactive timeline |
+| [event-tech-landscape](https://github.com/LensmorOfficial/event-tech-landscape) | Map of 80+ tools powering the event industry |
+| [exhibitor-intelligence-playbook](https://github.com/LensmorOfficial/exhibitor-intelligence-playbook) | 6-chapter B2B trade show ROI playbook |
+| [trade-show-email-templates](https://github.com/LensmorOfficial/trade-show-email-templates) | 16 ready-to-use email templates for trade show outreach |
+| [trade-show-skills](https://github.com/LensmorOfficial/trade-show-skills) | Claude Code AI skills for trade show research and planning |
+| [trade-show-tools](https://github.com/LensmorOfficial/trade-show-tools) | Free browser-based tools: ROI calculator, budget planner, and more |
+
+---
+
+## About Lensmor
+
+This map is built and maintained by [Lensmor](https://www.lensmor.com/?utm_source=github&utm_medium=readme&utm_campaign=trade-show-world-map) — an AI-native event intelligence platform for B2B sales and marketing teams.
+
+Lensmor helps you discover the right trade shows, analyze exhibitor lists, and generate qualified leads before, during, and after events.
+
+- Blog: [How to capture exhibitor leads at trade shows](https://www.lensmor.com/blog/trade-show-lead-capture?utm_source=github&utm_medium=readme&utm_campaign=trade-show-world-map)
+- Blog: [Hidden competitor intelligence from trade show floors](https://www.lensmor.com/blog/hidden-competitors?utm_source=github&utm_medium=readme&utm_campaign=trade-show-world-map)
 
 **[Try Lensmor Free →](https://www.lensmor.com/?utm_source=github&utm_medium=readme&utm_campaign=trade-show-world-map)**
+
+---
+
+If you find this map useful, please star this repo. It helps others discover it and keeps us motivated to add more data.
+
+[![Star on GitHub](https://img.shields.io/github/stars/LensmorOfficial/trade-show-world-map?style=social)](https://github.com/LensmorOfficial/trade-show-world-map)
