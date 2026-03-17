@@ -9,6 +9,12 @@
 
 An interactive world map of **200 major global B2B trade shows** across 60+ countries. Filter by industry, region, tier, and month to find the right events for your business.
 
+## Preview
+
+[![Global B2B Trade Show Map](screenshots/world-map-overview.png)](https://lensmorofficial.github.io/trade-show-world-map/)
+
+> 200 trade shows across 34 countries — filter by region, industry, tier, and month. [**Open live map →**](https://lensmorofficial.github.io/trade-show-world-map/)
+
 ## Features
 
 - **Interactive world map** powered by Leaflet.js with dark CartoDB tiles
