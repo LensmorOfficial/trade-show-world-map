@@ -24,7 +24,7 @@ Click any pin to see show details — name, dates, venue, exhibitor count, and a
 - **Filter by month** — see what's coming up in Q2, Q3, or any window you care about
 - **Compare tiers** — toggle between Tier 1 global flagships, Tier 2 regional leaders, and Tier 3 niche shows
 - **Click through to official sites** — every pin links directly to the show's homepage
-- **Use the data** — download the JSON dataset for your own analysis or integrations
+- **Use the data** — download or fetch the JSON dataset for your own analysis or integrations — see [docs/API.md](docs/API.md) for schema, code examples, and attribution requirements
 
 ## Features
 
