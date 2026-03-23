@@ -124,4 +124,4 @@ Common ways teams use this data:
 
 For data corrections, additions, or questions:
 - Open an issue: https://github.com/LensmorOfficial/trade-show-world-map/issues
-- Email: data@lensmor.com
+- Email: hello@lensmor.com
