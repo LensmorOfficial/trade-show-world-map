@@ -1,36 +1,42 @@
 # Data Export & API Documentation
 
-The trade show world map data is available in multiple formats for your own analysis, integrations, and applications.
+The trade show world map data is available as JSON format for analysis, integrations, and applications.
 
-## Data Formats
+## Data Format
 
 ### JSON (Full Dataset)
 
+The data is structured as an array of show objects.
+
+**File:** [data/b2b_shows.json](../data/b2b_shows.json)
+
+**Direct URL:** `https://lensmorofficial.github.io/trade-show-world-map/data/b2b_shows.json`
+
+**Sample structure:**
+
 ```json
-{
-  "shows": [
-    {
-      "name": "MEDICA",
-      "website": "https://www.medica.de",
-      "city": "Düsseldorf",
-      "country": "Germany",
-      "venue": "Messe Düsseldorf",
-      "start_date": "2026-11-16",
-      "end_date": "2026-11-19",
-      "frequency": "Annual",
-      "industry": "Healthcare & Medical",
-      "region": "Europe",
-      "tier": 1,
-      "lat": 51.2615,
-      "lng": 6.7602
-    }
-  ]
-}
+[
+  {
+    "name": "MEDICA",
+    "website": "https://www.medica.de",
+    "city": "Düsseldorf",
+    "country": "Germany",
+    "venue": "Messe Düsseldorf",
+    "start_date": "2026-11-16",
+    "end_date": "2026-11-19",
+    "frequency": "Annual",
+    "industry": "Healthcare & Medical",
+    "region": "Europe",
+    "tier": 1,
+    "lat": 51.2615,
+    "lng": 6.7602
+  }
+]
 ```
 
-**Download:** [data/shows.json](data/shows.json)
+**Note:** The JSON file contains an array of show objects (not wrapped in a `shows` key).
 
-### CSV (Spreadsheet-friendly)
+### Data Fields
 
 | Field | Description |
 |-------|-------------|
@@ -48,36 +54,30 @@ The trade show world map data is available in multiple formats for your own anal
 | lat | Latitude |
 | lng | Longitude |
 
-**Download:** [data/shows.csv](data/shows.csv)
+---
 
-### Direct API Access
+## Usage Examples
 
-For programmatic access, the data is available at:
-
-```
-https://lensmorofficial.github.io/trade-show-world-map/data/shows.json
-```
-
-**Example: Fetch all Tier 1 healthcare shows**
+### Example: Fetch all Tier 1 healthcare shows
 
 ```javascript
-fetch('https://lensmorofficial.github.io/trade-show-world-map/data/shows.json')
+fetch('https://lensmorofficial.github.io/trade-show-world-map/data/b2b_shows.json')
   .then(r => r.json())
-  .then(data => {
-    const healthcareShows = data.shows.filter(s => 
+  .then(shows => {
+    const healthcareShows = shows.filter(s => 
       s.industry === 'Healthcare & Medical' && s.tier === 1
     );
     console.log(healthcareShows);
   });
 ```
 
-**Example: Find shows in Q2 2026**
+### Example: Find shows in Q2 2026
 
 ```javascript
-fetch('https://lensmorofficial.github.io/trade-show-world-map/data/shows.json')
+fetch('https://lensmorofficial.github.io/trade-show-world-map/data/b2b_shows.json')
   .then(r => r.json())
-  .then(data => {
-    const q2Shows = data.shows.filter(s => {
+  .then(shows => {
+    const q2Shows = shows.filter(s => {
       const date = new Date(s.start_date);
       return date >= new Date('2026-04-01') && date <= new Date('2026-06-30');
     });
