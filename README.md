@@ -120,8 +120,7 @@ This map is built and maintained by [Lensmor](https://www.lensmor.com/?utm_sourc
 Lensmor goes beyond the map: analyze exhibitor lists, surface hidden competitors, and generate qualified leads from trade shows before the event starts.
 
 - [How to capture exhibitor leads at trade shows](https://www.lensmor.com/blog/trade-show-lead-capture?utm_source=github&utm_medium=readme&utm_campaign=trade-show-world-map)
-- [Hidden competitor intelligence from trade show floors](https://www.lensmor.com/blog/hidden-competitors-trade-shows?utm_source=github&utm_medium=readme&utm_campaign=trade-show-world-map)
-- [Pre-show competitor analysis template](https://www.lensmor.com/blog/pre-show-competitor-analysis-template?utm_source=github&utm_medium=readme&utm_campaign=trade-show-world-map)
+- [How to collect leads at trade shows](https://www.lensmor.com/blog/how-to-collect-leads?utm_source=github&utm_medium=readme&utm_campaign=trade-show-world-map)
 
 **[Try Lensmor Free →](https://www.lensmor.com/?utm_source=github&utm_medium=readme&utm_campaign=trade-show-world-map)**
 
